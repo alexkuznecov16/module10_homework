@@ -1,4 +1,3 @@
-
 const chat = document.getElementById('chat'); // chat area variable, where you can see messages
 const websocket = new WebSocket('wss://echo-ws-service.herokuapp.com'); // websocket
 
@@ -6,75 +5,80 @@ const websocket = new WebSocket('wss://echo-ws-service.herokuapp.com'); // webso
 document.addEventListener('DOMContentLoaded', () => {
     const savedMessages = localStorage.getItem('chatMessages') || ''; // get messages
     if (savedMessages.length > 0){
-        chat.innerHTML = savedMessages;
+        chat.innerHTML = savedMessages; // message adding
         chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
     }
 })
 
+// user send geolocation button event
 document.getElementById('sendLocation').addEventListener('click', () => {
+    // get geolocation
     if ('geolocation' in navigator){
         navigator.geolocation.getCurrentPosition((position) => {
             const { coords } = position;
-            const geolocationLink = `https://www.openstreetmap.org/?query=${coords.latitude},${coords.longitude}`
+            const geolocationLink = `https://www.openstreetmap.org/?query=${coords.latitude},${coords.longitude}`;
             const date = getDate();
-            chat.innerHTML += `<div class="message sender-msg geolocation-msg">Местоположение: <a href='${geolocationLink}' target='_blank'>ссылка</a> <span class="date">${date}</span></div>`
+            chat.innerHTML += `<div class="message sender-msg geolocation-msg">Geolocation: <a href='${geolocationLink}' target='_blank'>link</a> <span class="date">${date}</span></div>`; // message adding
 
-            //! messages storage
+            //! messages saving in local storage
             const savedMessages = localStorage.getItem('chatMessages') || '';
-            const newMessage = `<div class="message sender-msg geolocation-msg">Местоположение: <a href='${geolocationLink}' target='_blank'>ссылка</a> <span class="date">${date}</span></div>`;
+            const newMessage = `<div class="message sender-msg geolocation-msg">Geolocation: <a href='${geolocationLink}' target='_blank'>link</a> <span class="date">${date}</span></div>`;
             chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
-            localStorage.setItem('chatMessages', savedMessages + newMessage);
+            localStorage.setItem('chatMessages', savedMessages + newMessage);  // add message in storage
 
+            // server will send message after 0.1 seconds
             setTimeout(function (){
-                chat.innerHTML += `<div class="message server-msg geolocation-msg">Местоположение: <a href='${geolocationLink}' target='_blank'>ссылка</a> <span class="date">${date}</span></div>`
+                chat.innerHTML += `<div class="message server-msg geolocation-msg">Geolocation: <a href='${geolocationLink}' target='_blank'>link</a> <span class="date">${date}</span></div>`; // message adding
                 chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
 
-                //! messages storage
+                //! messages saving in local storage
                 const savedMessages = localStorage.getItem('chatMessages') || '';
-                const newMessage = `<div class="message server-msg geolocation-msg">Местоположение: <a href='${geolocationLink}' target='_blank'>ссылка</a> <span class="date">${date}</span></div>`;
-                localStorage.setItem('chatMessages', savedMessages + newMessage);
+                const newMessage = `<div class="message server-msg geolocation-msg">Geolocation: <a href='${geolocationLink}' target='_blank'>link</a> <span class="date">${date}</span></div>`;
+                localStorage.setItem('chatMessages', savedMessages + newMessage);  // add message in storage
 
             }, 100)
         });
-    };
+    } else {
+        alert(`Error: Your device or browser can't use your geolocation!`);
+    }
 });
 
 document.getElementById('sendMessage').addEventListener('click', (event) => {
     event.preventDefault();
     let msgText = document.getElementById('msgValue');
     if (msgText.value === ''){
-        alert('Ошибка: сообщение должно содержать как минимум 1 символ!')
+        alert('Error: your message is empty!');
     } else {
         const date = getDate();
-        chat.innerHTML += `<div class="message sender-msg">${msgText.value} <span class="date">${date}</span></div>`;
+        chat.innerHTML += `<div class="message sender-msg">${msgText.value} <span class="date">${date}</span></div>`; // message adding
 
-        //! messages storage
+        //! messages saving in local storage
         const savedMessages = localStorage.getItem('chatMessages') || ''; 
         const newMessage = `<div class="message sender-msg">${msgText.value} <span class="date">${date}</span></div>`;
-        localStorage.setItem('chatMessages', savedMessages + newMessage);
+        localStorage.setItem('chatMessages', savedMessages + newMessage);  // add message in storage
 
 
-        websocket.send(msgText.value);
+        websocket.send(msgText.value); // we give to websocket a user message value of text
         msgText.value = '';
     }
     chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
 })
 
-// message server text
+// server message sending
 websocket.onmessage = (event) => {
     const date = getDate();
     const message = event.data;
-    chat.innerHTML += `<div class="message server-msg">${message} <span class="date">${date}</span></div>`;
+    chat.innerHTML += `<div class="message server-msg">${message} <span class="date">${date}</span></div>`; // message adding
 
-    //! messages storage
+    //! messages saving in local storage
     const savedMessages = localStorage.getItem('chatMessages') || '';
     const newMessage = `<div class="message server-msg">${message} <span class="date">${date}</span></div>`;
-    localStorage.setItem('chatMessages', savedMessages + newMessage);
+    localStorage.setItem('chatMessages', savedMessages + newMessage); // add message in storage
 
     chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
 }
 
-
+// function which give message sending date
 function getDate(){
     let currentDate = new Date();
     let currentDay = currentDate.getDate();
