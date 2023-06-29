@@ -96,6 +96,7 @@ document.getElementById('myButton').addEventListener('click', () => {
 
 
 ## Exercise 3
+- chat project - https://chat-theta-seven-20.vercel.app/
 # Условие
 
     Реализовать чат на основе эхо-сервера wss://echo-ws-service.herokuapp.com.
