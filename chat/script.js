@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedMessages = localStorage.getItem('chatMessages') || ''; // get messages
     if (savedMessages.length > 0){
         chat.innerHTML = savedMessages;
+        chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
     }
 })
 
