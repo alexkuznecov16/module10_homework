@@ -25,18 +25,6 @@ document.getElementById('sendLocation').addEventListener('click', () => {
             const newMessage = `<div class="message sender-msg geolocation-msg">Geolocation: <a href='${geolocationLink}' target='_blank'>link</a> <span class="date">${date}</span></div>`;
             chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
             localStorage.setItem('chatMessages', savedMessages + newMessage);  // add message in storage
-
-            // server will send message after 0.1 seconds
-            setTimeout(function (){
-                chat.innerHTML += `<div class="message server-msg geolocation-msg">Geolocation: <a href='${geolocationLink}' target='_blank'>link</a> <span class="date">${date}</span></div>`; // message adding
-                chat.scrollTop = chat.scrollHeight; // auto scroll to bottom
-
-                //! messages saving in local storage
-                const savedMessages = localStorage.getItem('chatMessages') || '';
-                const newMessage = `<div class="message server-msg geolocation-msg">Geolocation: <a href='${geolocationLink}' target='_blank'>link</a> <span class="date">${date}</span></div>`;
-                localStorage.setItem('chatMessages', savedMessages + newMessage);  // add message in storage
-
-            }, 100)
         });
     } else {
         alert(`Error: Your device or browser can't use your geolocation!`);
