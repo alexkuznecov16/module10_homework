@@ -92,3 +92,9 @@ body{
 .geolocation-msg {
     background-color: rgb(197, 251, 185);
 }
+
+@media screen and (max-width: 400px){
+    .message-btn{
+        font-size: 12px;
+    }
+}
